@@ -1,0 +1,92 @@
+# Unit-II Probability and Statistics: Review of Probability Theory, Conditional Probability,Independent events, Bayes' theorem and it application in data analysis, Descriptive Statistics,Exploratory data analysis, Coefficient of variation, Skewness, Kurtosis, Data visualization, Scatterdiagram, Grouped data, Histograms, Ogives, Percentiles, Box Plot, .
+
+pip install numpy pandas matplotlib seaborn scipy
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy.stats import skew, kurtosis, norm
+
+# Generate synthetic data
+np.random.seed(0)
+data = np.random.normal(loc=50, scale=10, size=1000)
+df = pd.DataFrame({'Value': data})
+
+# 1. Descriptive Statistics
+print("Descriptive Statistics:\n", df.describe())
+
+# 2. Coefficient of Variation
+cv = df['Value'].std() / df['Value'].mean()
+print(f"\nCoefficient of Variation: {cv:.4f}")
+
+# 3. Skewness and Kurtosis
+print(f"Skewness: {skew(df['Value']):.4f}")
+print(f"Kurtosis: {kurtosis(df['Value']):.4f}")
+
+# 4. Histogram
+plt.figure(figsize=(6, 4))
+sns.histplot(df['Value'], bins=30, kde=True)
+plt.title("Histogram")
+plt.show()
+
+# 5. Box Plot
+plt.figure(figsize=(6, 4))
+sns.boxplot(x=df['Value'])
+plt.title("Box Plot")
+plt.show()
+
+# 6. Scatter Diagram
+x = np.linspace(0, 100, 100)
+y = x + np.random.normal(0, 10, 100)
+plt.figure(figsize=(6, 4))
+plt.scatter(x, y)
+plt.title("Scatter Plot")
+plt.xlabel("X")
+plt.ylabel("Y")
+plt.show()
+
+# 7. Ogive (Cumulative Frequency)
+counts, bin_edges = np.histogram(df['Value'], bins=10)
+cumulative = np.cumsum(counts)
+plt.figure(figsize=(6, 4))
+plt.plot(bin_edges[1:], cumulative, marker='o')
+plt.title("Ogive (Cumulative Frequency)")
+plt.xlabel("Value")
+plt.ylabel("Cumulative Frequency")
+plt.grid(True)
+plt.show()
+
+# 8. Percentiles
+percentiles = np.percentile(df['Value'], [25, 50, 75])
+print(f"\n25th, 50th, 75th Percentiles: {percentiles}")
+
+# 9. Grouped Data Summary (Using cut and groupby)
+df['Group'] = pd.cut(df['Value'], bins=5)
+group_summary = df.groupby('Group')['Value'].agg(['count', 'mean', 'std'])
+print("\nGrouped Data Summary:\n", group_summary)
+
+# 10. Probability Theory
+events = ['A', 'B']
+P_A = 0.5
+P_B = 0.4
+P_A_and_B = 0.2
+
+# Conditional Probability P(A|B)
+P_A_given_B = P_A_and_B / P_B
+print(f"\nP(A|B) = {P_A_given_B:.2f}")
+
+# Independent Events Check
+print("Independent?" , "Yes" if P_A_and_B == P_A * P_B else "No")
+
+# 11. Bayes’ Theorem Application
+# P(H|E) = [P(E|H) * P(H)] / P(E)
+P_H = 0.01      # e.g., has disease
+P_E_given_H = 0.95  # test positive if has disease
+P_E_given_not_H = 0.05
+P_not_H = 1 - P_H
+P_E = (P_E_given_H * P_H) + (P_E_given_not_H * P_not_H)
+
+P_H_given_E = (P_E_given_H * P_H) / P_E
+print(f"Bayes' Theorem Result (P(H|E)) = {P_H_given_E:.4f}")
+
